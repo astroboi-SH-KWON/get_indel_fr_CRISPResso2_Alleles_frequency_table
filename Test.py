@@ -50,11 +50,14 @@ def anlyze_indel_by_MAIN_to_SUB():
         util.make_excel_err_list(WORK_DIR + "output/" + MAIN_SUB_NAME[idx] + "_error_list", sorted_err_list)
 
 
-
+def make_excel_test():
+    for row in range(3, 10):
+        print(row)
 
 
 if __name__ == '__main__':
     start_time = time.perf_counter()
     print("start [ " + PROJECT_NAME + " ]>>>>>>>>>>>>>>>>>>")
-    anlyze_indel_by_MAIN_to_SUB()  # 1
+    make_excel_test()
+    # anlyze_indel_by_MAIN_to_SUB()  # 1
     print("::::::::::: %.2f seconds ::::::::::::::" % (time.perf_counter() - start_time))

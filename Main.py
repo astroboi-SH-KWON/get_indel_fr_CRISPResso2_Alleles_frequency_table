@@ -92,6 +92,45 @@ def anlyze_indel_by_MAIN_to_SUB_from_list():
             logic.count_num_by_err(sorted_err_list)
             util.make_excel_err_list(WORK_DIR + "output/" + main_sub_nm[tmp_idx] + "_error_list_" + str(idx), sorted_err_list)
 
+def indel_frequency_by_1500x1500_cell_id():
+    util = Util.Utils()
+    logic_prep = LogicPrep.LogicPreps()
+    logic = Logic.Logics()
+
+    brcd_list = util.csv_to_list_ignr_header(WORK_DIR + INPUT + BRCD_FILE)
+    brcd_arr = logic_prep.make_arr_list_to_list(brcd_list)
+    cell_id_list = logic_prep.make_cell_id(brcd_arr, "^")
+
+    var_list = util.csv_to_list_ignr_header(WORK_DIR + INPUT + "var_list.txt", "\t")
+
+    for idx in range(int(len(var_list) / 2)):
+        main_idx = 2 * idx
+        sub_idx = 2 * idx + 1
+        main_arr = var_list[main_idx]
+        sub_arr = var_list[sub_idx]
+
+        main_sub_nm = [main_arr[0], sub_arr[0]]
+        main_path = main_arr[4] + "/CRISPResso_on_" + main_arr[1].replace(".fastq", "") + "_" + main_arr[2].replace(
+            ".fastq", "")
+        sub_path = sub_arr[4] + "/CRISPResso_on_" + sub_arr[1].replace(".fastq", "") + "_" + sub_arr[2].replace(
+            ".fastq", "")
+        path_arr = [main_path, sub_path]
+
+        trgt_list = []
+        for path in path_arr:
+            csv_list = util.csv_to_list_ignr_header(WORK_DIR + INPUT + path + F_TABLE_FILE, "\t")
+            tmp_list, err_list = logic_prep.get_data_by_cell_id(csv_list, brcd_arr, CONST_INIT)
+            trgt_list.append(tmp_list)
+
+        util.make_excel_homo_hetero(
+            WORK_DIR + "output/homo_hetero _" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(idx), trgt_list,
+            cell_id_list)
+
+
+
+
+
+
 
 
 
@@ -100,6 +139,7 @@ def anlyze_indel_by_MAIN_to_SUB_from_list():
 if __name__ == '__main__':
     start_time = time.perf_counter()
     print("start [ " + PROJECT_NAME + " ]>>>>>>>>>>>>>>>>>>")
-    anlyze_indel_by_MAIN_to_SUB_from_list()  # 2
+    indel_frequency_by_1500x1500_cell_id()
+    # anlyze_indel_by_MAIN_to_SUB_from_list()  # 2
     # anlyze_indel_by_MAIN_to_SUB()  # 1
     print("::::::::::: %.2f seconds ::::::::::::::" % (time.perf_counter() - start_time))

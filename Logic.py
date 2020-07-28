@@ -87,3 +87,17 @@ class Logics:
         data_list.append(err_cnt_arr)
         data_list.append(["large_indel", "no_brcd1", "wrong_pos_const2_strt", "no_brcd2", "no_const2"])
 
+
+    def check_homo_hetero(self, cell_id, mut_dict, non_mut_dict):
+        if cell_id in mut_dict:
+            if cell_id in non_mut_dict:
+                return "hetero"
+            else:
+                return "homo"
+        else:
+            if cell_id in non_mut_dict:
+                return "wild_type"
+            else:
+                return ""
+
+
