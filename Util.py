@@ -12,7 +12,7 @@ class Utils:
         self.percent = 100
 
     def csv_to_list_ignr_header(self, path, deli_str=","):
-        result_list =[]
+        result_list = []
         with open(path, "r") as f:
             header = f.readline()
             print(header)

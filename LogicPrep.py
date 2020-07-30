@@ -95,11 +95,3 @@ class LogicPreps:
                     non_mut_dict.update({cell_id: [data_arr]})
 
         return [mut_dict, non_mut_dict], err_list
-
-
-
-
-
-
-
-

@@ -42,7 +42,7 @@ def anlyze_indel_by_MAIN_to_SUB():
         trgt_err_list.append(err_list)
 
     # result_dict = logic.count_len_arr_mut_non_mut_by_main_list(trgt_list[0], trgt_list[1], brcd_arr)
-    result_dict = logic.count_cell_mut_non_mut_by_main_list(trgt_list[0], trgt_list[1], brcd_arr)
+    result_dict = logic.count_cell_mut_non_mut_by_main_list(trgt_list[0], trgt_list[1])
     util.make_excel_indel_frequency_by_cell_id(
         WORK_DIR + "output/result_indel_" + MAIN_SUB_NAME[0] + "_" + MAIN_SUB_NAME[1], result_dict, MAIN_SUB_NAME)
 
@@ -85,7 +85,7 @@ def anlyze_indel_by_MAIN_to_SUB_from_list():
             trgt_list.append(result_list)
             trgt_err_list.append(err_list)
 
-        result_dict = logic.count_cell_mut_non_mut_by_main_list(trgt_list[0], trgt_list[1], brcd_arr)
+        result_dict = logic.count_cell_mut_non_mut_by_main_list(trgt_list[0], trgt_list[1])
         util.make_excel_indel_frequency_by_cell_id(
             WORK_DIR + "output/result_indel_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(idx), result_dict, main_sub_nm)
 

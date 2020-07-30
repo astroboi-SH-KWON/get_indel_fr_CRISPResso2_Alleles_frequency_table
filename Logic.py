@@ -12,14 +12,7 @@ class Logics:
         main_list = [mut_dict, non_mut_dict]
         sub_list = [mut_dict, non_mut_dict]
     """
-    def count_len_arr_mut_non_mut_by_main_list(self, main_list, sub_list, brcd_arr):
-        # logic_prep = LogicPrep.LogicPreps()
-        # cell_id_list = logic_prep.make_cell_id(brcd_arr, "^")
-
-
-        no_freq_cell_main_list = []
-        no_freq_cell_sub_list = []
-
+    def count_len_arr_mut_non_mut_by_main_list(self, main_list, sub_list):
         main_mut_dict = main_list[0]
         main_non_mut_dict = main_list[1]
         sub_mut_dict = sub_list[0]
@@ -43,7 +36,7 @@ class Logics:
 
         return result_dict
 
-    def count_cell_mut_non_mut_by_main_list(self, main_list, sub_list, brcd_arr):
+    def count_cell_mut_non_mut_by_main_list(self, main_list, sub_list):
         main_mut_dict = main_list[0]
         main_non_mut_dict = main_list[1]
         sub_mut_dict = sub_list[0]
