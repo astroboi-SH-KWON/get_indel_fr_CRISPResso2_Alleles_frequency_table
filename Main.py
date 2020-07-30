@@ -23,7 +23,7 @@ MAIN_DIR = "TGCCATGGAGGAGTCACAGT"
 SUB_DIR = "AGAGGACAGTCAGCTCCAAG"
 MAIN_SUB_NAME = ["trp53", "fancg"]
 
-THRESHOLD_ARR = [10, 10]
+THRESHOLD_ARR = [5, 5]
 ############### end setting env #################
 def anlyze_indel_by_MAIN_to_SUB():
     util = Util.Utils()
@@ -124,9 +124,9 @@ def indel_frequency_by_1500x1500_cell_id():
             tmp_list, err_list = logic_prep.get_data_by_cell_id(csv_list, brcd_arr, CONST_INIT)
             trgt_list.append(tmp_list)
 
-        junk_arr = util.make_excel_hom_hete_filter_out_by_frequency(
-            WORK_DIR + "output/filter_out_by_frequency_homo_hetero_" + main_sub_nm[0] + "_" + main_sub_nm[
-                1] + "_" + str(idx), trgt_list, cell_id_list, THRESHOLD_ARR)
+        junk_arr = util.make_excel_tot_read_by_cell_filter_out_by_frequency(
+            WORK_DIR + "output/tot_read_by_cell_homo_hetero_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(idx),
+            trgt_list, cell_id_list, THRESHOLD_ARR)
 
         # junk_file_nm = ['cell_non_junk', 'non_cell_junk']
         # for idx_junk in range(len(junk_arr)):
