@@ -4,6 +4,8 @@ class Logics:
         self.homo = "homo"
         self.hetero = "hetero"
         self.wt = "wild_type"
+        self.deli = "^"
+        self.percent = 100
 
     """
     :param
@@ -154,4 +156,63 @@ class Logics:
         for data_arr in data_list:
             cnt += int(data_arr[7])
         return cnt
+
+    def get_num_of_reads_percent_of_read_by_cell(self, trgt_list, id_list, thres_arr):
+        result_list = []
+
+        main_mut_dict = trgt_list[0][0]
+        main_non_mut_dict = trgt_list[0][1]
+        sub_mut_dict = trgt_list[1][0]
+        sub_non_mut_dict = trgt_list[1][1]
+
+        threshold_main_freq = thres_arr[0]
+        threshold_sub_freq = thres_arr[1]
+
+        cell_non_junk_list = []
+        non_cell_junk_list = []
+        cnt_homo_hetero_wt = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+        row = 0
+        for cell_id in id_list:
+
+            # filter out cell_none or none_cell junks
+            main_homo_hetero = self.check_homo_hetero(cell_id, main_mut_dict, main_non_mut_dict)
+            sub_homo_hetero = self.check_homo_hetero(cell_id, sub_mut_dict, sub_non_mut_dict)
+            if main_homo_hetero == "":
+                if sub_homo_hetero == "":
+                    continue
+                else:  # filter out cell_none junks
+                    self.add_junk_list(cell_id, sub_mut_dict, sub_non_mut_dict, non_cell_junk_list)
+                    continue
+            # filter out none_cell junks
+            if sub_homo_hetero == "":
+                self.add_junk_list(cell_id, main_mut_dict, main_non_mut_dict, cell_non_junk_list)
+                continue
+
+            # filter out by threshold
+            len_main_mut, len_main_non = self.count_freq_by_cell(cell_id, main_mut_dict, main_non_mut_dict)
+            len_sub_mut, len_sub_non = self.count_freq_by_cell(cell_id, sub_mut_dict, sub_non_mut_dict)
+            if len_main_mut + len_main_non <= threshold_main_freq:
+                continue
+            if len_sub_mut + len_sub_non <= threshold_sub_freq:
+                continue
+
+            self.count_homo_hetero_wt(main_homo_hetero, sub_homo_hetero, cnt_homo_hetero_wt)
+
+            row += 1
+            barcd1 = cell_id.split(self.deli)[0]
+            barcd2 = cell_id.split(self.deli)[1]
+            tmp_row = [row, barcd1, barcd2, main_homo_hetero, len_main_mut,
+                       len_main_mut * self.percent / (len_main_mut + len_main_non), len_main_non,
+                       len_main_non * self.percent / (len_main_mut + len_main_non), len_main_mut + len_main_non,
+                       sub_homo_hetero, len_sub_mut, len_sub_mut * self.percent / (len_sub_mut + len_sub_non),
+                       len_sub_non, len_sub_non * self.percent / (len_sub_mut + len_sub_non), len_sub_mut + len_sub_non]
+
+            result_list.append(tmp_row)
+
+        return result_list, cnt_homo_hetero_wt, [cell_non_junk_list, non_cell_junk_list]
+
+
+
+
 

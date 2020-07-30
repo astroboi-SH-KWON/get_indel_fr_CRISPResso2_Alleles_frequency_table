@@ -156,8 +156,8 @@ class Utils:
             # blank row by cell_id
             row += 1
 
-        for cnt_h_h_w in range(len(cnt_homo_hetero_wt)):
-            sheet.cell(row=2, column=(cnt_h_h_w + 1), value=cnt_homo_hetero_wt[cnt_h_h_w])
+        # make homo_homo, homo_hetero, homo_wt, hetero_homo,... count column
+        self.make_row(sheet, 2, cnt_homo_hetero_wt)
 
         workbook.save(filename=path + self.ext_xlsx)
 
@@ -197,7 +197,7 @@ class Utils:
 
         workbook.save(filename=path + self.ext_xlsx)
 
-    def make_excel_hom_hete_filter_out_by_frequency(self, path, trgt_list, id_list, freq_arr):
+    def make_excel_hom_hete_filter_out_by_frequency(self, path, trgt_list, id_list, thres_arr):
         logic = Logic.Logics()
 
         workbook = openpyxl.Workbook()
@@ -208,8 +208,8 @@ class Utils:
         sub_mut_dict = trgt_list[1][0]
         sub_non_mut_dict = trgt_list[1][1]
 
-        threshold_main_freq = freq_arr[0]
-        threshold_sub_freq = freq_arr[1]
+        threshold_main_freq = thres_arr[0]
+        threshold_sub_freq = thres_arr[1]
 
         row = 1
         cnt_sam = ['homo', 'hetero', 'wt']
@@ -308,8 +308,8 @@ class Utils:
             # blank row by cell_id
             row += 1
 
-        for cnt_h_h_w in range(len(cnt_homo_hetero_wt)):
-            sheet.cell(row=2, column=(cnt_h_h_w + 1), value=cnt_homo_hetero_wt[cnt_h_h_w])
+        # make homo_homo, homo_hetero, homo_wt, hetero_homo,... count column
+        self.make_row(sheet, 2, cnt_homo_hetero_wt)
 
         workbook.save(filename=path + self.ext_xlsx)
 
@@ -319,7 +319,7 @@ class Utils:
         for idx in range(len(data_arr)):
             sheet.cell(row=row, column=(col + idx), value=data_arr[idx])
 
-    def make_excel_tot_read_by_cell_filter_out_by_frequency(self, path, trgt_list, id_list, freq_arr):
+    def make_excel_tot_read_by_cell_filter_out_by_frequency(self, path, trgt_list, id_list, thres_arr):
         logic = Logic.Logics()
 
         workbook = openpyxl.Workbook()
@@ -330,8 +330,8 @@ class Utils:
         sub_mut_dict = trgt_list[1][0]
         sub_non_mut_dict = trgt_list[1][1]
 
-        threshold_main_freq = freq_arr[0]
-        threshold_sub_freq = freq_arr[1]
+        threshold_main_freq = thres_arr[0]
+        threshold_sub_freq = thres_arr[1]
 
         row = 1
         cnt_sam = ['homo', 'hetero', 'wt']
@@ -381,16 +381,43 @@ class Utils:
             barcd2 = cell_id.split(self.deli)[1]
             tmp_row = [row - 4, barcd1, barcd2, main_homo_hetero, len_main_mut,
                        len_main_mut * self.percent / (len_main_mut + len_main_non), len_main_non,
-                       len_main_non * self.percent / (len_main_mut + len_main_non), len_main_mut + len_main_non, sub_homo_hetero,
-                       len_sub_mut, len_sub_mut * self.percent / (len_sub_mut + len_sub_non), len_sub_non,
-                       len_sub_non * self.percent / (len_sub_mut + len_sub_non), len_sub_mut + len_sub_non]
+                       len_main_non * self.percent / (len_main_mut + len_main_non), len_main_mut + len_main_non,
+                       sub_homo_hetero, len_sub_mut, len_sub_mut * self.percent / (len_sub_mut + len_sub_non),
+                       len_sub_non, len_sub_non * self.percent / (len_sub_mut + len_sub_non), len_sub_mut + len_sub_non]
             self.make_row(sheet, row, tmp_row)
 
-        for cnt_h_h_w in range(len(cnt_homo_hetero_wt)):
-            sheet.cell(row=2, column=(cnt_h_h_w + 1), value=cnt_homo_hetero_wt[cnt_h_h_w])
+        # make homo_homo, homo_hetero, homo_wt, hetero_homo,... count column
+        self.make_row(sheet, 2, cnt_homo_hetero_wt)
 
         workbook.save(filename=path + self.ext_xlsx)
 
         return [cell_non_junk_list, non_cell_junk_list]
+
+    def make_excel_by_list(self, path, result_list, cnt_homo_hetero_wt):
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+
+        row = 1
+        cnt_sam = ['homo', 'hetero', 'wt']
+        cnt_arr = []
+        for h_1 in cnt_sam:
+            for h_2 in cnt_sam:
+                cnt_arr.append(h_1 + "_" + h_2)
+        self.make_row(sheet, row, cnt_arr)
+
+        # make homo_homo, homo_hetero, homo_wt, hetero_homo,... count column
+        self.make_row(sheet, 2, cnt_homo_hetero_wt)
+
+        row = 4
+        header_arr = ['index', 'barcode_1', 'barcode_2', 'homo_hetero', '#0f_O', '%of_O', '#of_X', '%of_X',
+                      'total_main', 'target_homo_hetero', '#0f_target_O', '%of_target_O', '#of_target_X',
+                      '%of_target_X', 'total_target']
+        self.make_row(sheet, row, header_arr)
+
+        for result_arr in result_list:
+            row += 1
+            self.make_row(sheet, row, result_arr)
+
+        workbook.save(filename=path + self.ext_xlsx)
 
 

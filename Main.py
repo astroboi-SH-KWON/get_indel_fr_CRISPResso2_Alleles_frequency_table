@@ -119,14 +119,24 @@ def indel_frequency_by_1500x1500_cell_id():
         path_arr = [main_path, sub_path]
 
         trgt_list = []
+        trgt_err_list = []
         for path in path_arr:
             csv_list = util.csv_to_list_ignr_header(WORK_DIR + INPUT + path + F_TABLE_FILE, "\t")
             tmp_list, err_list = logic_prep.get_data_by_cell_id(csv_list, brcd_arr, CONST_INIT)
             trgt_list.append(tmp_list)
+            trgt_err_list.append(err_list)
 
-        junk_arr = util.make_excel_tot_read_by_cell_filter_out_by_frequency(
+        result_list, cnt_hom_hete_wt, junk_arr = logic.get_num_of_reads_percent_of_read_by_cell(trgt_list, cell_id_list,
+                                                                                                THRESHOLD_ARR)
+
+        util.make_excel_by_list(
             WORK_DIR + "output/tot_read_by_cell_homo_hetero_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(idx),
-            trgt_list, cell_id_list, THRESHOLD_ARR)
+            result_list, cnt_hom_hete_wt)
+
+        for tmp_idx in range(len(trgt_err_list)):
+            sorted_err_list = logic_prep.sort_list_by_ele(trgt_err_list[tmp_idx], -1)
+            logic.count_num_by_err(sorted_err_list)
+            util.make_excel_err_list(WORK_DIR + "output/" + main_sub_nm[tmp_idx] + "_error_list_" + str(idx), sorted_err_list)
 
         # junk_file_nm = ['cell_non_junk', 'non_cell_junk']
         # for idx_junk in range(len(junk_arr)):
