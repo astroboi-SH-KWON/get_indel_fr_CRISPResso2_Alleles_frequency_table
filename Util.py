@@ -83,6 +83,17 @@ class Utils:
         sub_non_mut_dict = trgt_list[1][1]
 
         row = 1
+        sheet.cell(row=row, column=1, value='homo_homo')
+        sheet.cell(row=row, column=2, value='homo_hetero')
+        sheet.cell(row=row, column=3, value='homo_wt')
+        sheet.cell(row=row, column=4, value='hetero_homo')
+        sheet.cell(row=row, column=5, value='hetero_hetero')
+        sheet.cell(row=row, column=6, value='hetero_wt')
+        sheet.cell(row=row, column=7, value='wt_homo')
+        sheet.cell(row=row, column=8, value='wt_hetero')
+        sheet.cell(row=row, column=9, value='wt_wt')
+
+        row = 4
         sheet.cell(row=row, column=1, value='index')
         sheet.cell(row=row, column=2, value='barcode_1')
         sheet.cell(row=row, column=3, value='barcode_2')
@@ -95,15 +106,25 @@ class Utils:
         sheet.cell(row=row, column=10, value='sub_indel_flag')
         sheet.cell(row=row, column=11, value='sub_#of_read')
 
+        cell_non_junk_list = []
+        non_cell_junk_list = []
+        cnt_homo_hetero_wt = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         for cell_id in id_list:
+            index = 1
             main_homo_hetero = logic.check_homo_hetero(cell_id, main_mut_dict, main_non_mut_dict)
             sub_homo_hetero = logic.check_homo_hetero(cell_id, sub_mut_dict, sub_non_mut_dict)
             if main_homo_hetero == "":
                 if sub_homo_hetero == "":
                     continue
                 else:
-                    # TODO non_cat_list
+                    logic.add_junk_list(cell_id, sub_mut_dict, sub_non_mut_dict, non_cell_junk_list)
                     continue
+
+            if sub_homo_hetero == "":
+                logic.add_junk_list(cell_id, main_mut_dict, main_non_mut_dict, cell_non_junk_list)
+                continue
+
+            logic.count_homo_hetero_wt(main_homo_hetero, sub_homo_hetero, cnt_homo_hetero_wt)
 
             if cell_id in main_mut_dict:
                 main_row = row
@@ -133,9 +154,10 @@ class Utils:
                 if main_row < sub_row:
                     row = sub_row
                 for idx_row in range(tmp_row, row + 1):
-                    sheet.cell(row=idx_row, column=1, value=str(idx_row - 1))
+                    sheet.cell(row=idx_row, column=1, value=str(index))
                     sheet.cell(row=idx_row, column=2, value=cell_id.split("^")[0])
                     sheet.cell(row=idx_row, column=3, value=cell_id.split("^")[1])
+                    index += 1
 
             if cell_id in main_non_mut_dict:
                 main_row = row
@@ -165,10 +187,62 @@ class Utils:
                 if main_row < sub_row:
                     row = sub_row
                 for idx_row in range(tmp_row, row + 1):
-                    sheet.cell(row=idx_row, column=1, value=str(idx_row - 1))
+                    sheet.cell(row=idx_row, column=1, value=str(index))
                     sheet.cell(row=idx_row, column=2, value=cell_id.split("^")[0])
                     sheet.cell(row=idx_row, column=3, value=cell_id.split("^")[1])
+                    index += 1
+            # blank row by cell_id
+            row += 1
 
+        for cnt_h_h_w in range(len(cnt_homo_hetero_wt)):
+            sheet.cell(row=2, column=(cnt_h_h_w + 1), value=cnt_homo_hetero_wt[cnt_h_h_w])
+
+        workbook.save(filename=path + self.ext_xlsx)
+
+        return [cell_non_junk_list, non_cell_junk_list]
+
+    def make_excel_by_arr_list(self, path, data_list):
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+
+        row = 1
+        sheet.cell(row=row, column=1, value='barcode_1')
+        sheet.cell(row=row, column=2, value='barcode_2')
+        sheet.cell(row=row, column=3, value='indel_flag')
+        sheet.cell(row=row, column=4, value='Aligned_Sequence')
+        sheet.cell(row=row, column=5, value='Reference_Sequence')
+        sheet.cell(row=row, column=6, value='Reference_Name')
+        sheet.cell(row=row, column=7, value='Read_Status')
+        sheet.cell(row=row, column=8, value='n_deleted')
+        sheet.cell(row=row, column=9, value='n_inserted')
+        sheet.cell(row=row, column=10, value='n_mutated')
+        sheet.cell(row=row, column=11, value='#Reads')
+        sheet.cell(row=row, column=12, value='%Reads')
+
+        for data_arr in data_list:
+            barcode_pair = data_arr[0].split("^")
+            mut_list = data_arr[1]
+            non_mut_list = data_arr[2]
+
+            for tmp_arr in mut_list:
+                row += 1
+                sheet.cell(row=row, column=1, value=barcode_pair[0])
+                sheet.cell(row=row, column=2, value=barcode_pair[1])
+                sheet.cell(row=row, column=3, value='O')
+                col = 4
+                for tmp_data in tmp_arr:
+                    sheet.cell(row=row, column=col, value=tmp_data)
+                    col += 1
+
+            for tmp_arr in non_mut_list:
+                row += 1
+                sheet.cell(row=row, column=1, value=barcode_pair[0])
+                sheet.cell(row=row, column=2, value=barcode_pair[1])
+                sheet.cell(row=row, column=3, value='X')
+                col = 4
+                for tmp_data in tmp_arr:
+                    sheet.cell(row=row, column=col, value=tmp_data)
+                    col += 1
 
         workbook.save(filename=path + self.ext_xlsx)
 

@@ -122,9 +122,15 @@ def indel_frequency_by_1500x1500_cell_id():
             tmp_list, err_list = logic_prep.get_data_by_cell_id(csv_list, brcd_arr, CONST_INIT)
             trgt_list.append(tmp_list)
 
-        util.make_excel_homo_hetero(
-            WORK_DIR + "output/homo_hetero _" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(idx), trgt_list,
+        junk_arr = util.make_excel_homo_hetero(
+            WORK_DIR + "output/homo_hetero_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(idx), trgt_list,
             cell_id_list)
+
+        junk_file_nm = ['cell_non_junk', 'non_cell_junk']
+        for idx_junk in range(len(junk_arr)):
+            util.make_excel_by_arr_list(
+                WORK_DIR + "output/" + junk_file_nm[idx_junk] + "_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(
+                    idx), junk_arr[idx_junk])
 
 
 
