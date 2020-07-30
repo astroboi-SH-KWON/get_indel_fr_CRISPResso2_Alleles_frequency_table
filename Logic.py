@@ -89,7 +89,6 @@ class Logics:
         data_list.append(err_cnt_arr)
         data_list.append(["large_indel", "no_brcd1", "wrong_pos_const2_strt", "no_brcd2", "no_const2"])
 
-
     def check_homo_hetero(self, cell_id, mut_dict, non_mut_dict):
         if cell_id in mut_dict:
             if cell_id in non_mut_dict:
@@ -101,6 +100,19 @@ class Logics:
                 return self.wt
             else:
                 return ""
+
+    def count_freq_by_cell(self, cell_id, mut_dict, non_mut_dict):
+        if cell_id in mut_dict:
+            if cell_id in non_mut_dict:
+                return self.tot_num_of_read_by_cell(mut_dict[cell_id]), self.tot_num_of_read_by_cell(
+                    non_mut_dict[cell_id])
+            else:
+                return self.tot_num_of_read_by_cell(mut_dict[cell_id]), 0
+        else:
+            if cell_id in non_mut_dict:
+                return 0, self.tot_num_of_read_by_cell(non_mut_dict[cell_id])
+            else:
+                return 0, 0
 
     def count_homo_hetero_wt(self, main_type, sub_type, cnt_homo_hetero_wt):
         if main_type == self.homo:
@@ -136,4 +148,10 @@ class Logics:
         else:
             tmp_arr.append([])
         junk_list.append(tmp_arr)
+
+    def tot_num_of_read_by_cell(self, data_list):
+        cnt = 0
+        for data_arr in data_list:
+            cnt += int(data_arr[7])
+        return cnt
 
