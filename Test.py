@@ -23,7 +23,7 @@ MAIN_DIR = "TGCCATGGAGGAGTCACAGT"
 SUB_DIR = "AGAGGACAGTCAGCTCCAAG"
 MAIN_SUB_NAME = ["trp53", "fancg"]
 
-THRESHOLD_ARR = [10, 10]
+THRESHOLD_ARR = [5, 5]
 ############### end setting env #################
 def anlyze_indel_by_MAIN_to_SUB():
     util = Util.Utils()
@@ -52,7 +52,7 @@ def anlyze_indel_by_MAIN_to_SUB():
         util.make_excel_err_list(WORK_DIR + "output/" + MAIN_SUB_NAME[idx] + "_error_list", sorted_err_list)
 
 
-def indel_frequency_by_1500x1500_cell_id():
+def show_chart():
     util = Util.Utils()
     logic_prep = LogicPrep.LogicPreps()
     logic = Logic.Logics()
@@ -63,6 +63,7 @@ def indel_frequency_by_1500x1500_cell_id():
 
     var_list = util.csv_to_list_ignr_header(WORK_DIR + INPUT + "var_list.txt", "\t")
 
+    graph_list = []
     for idx in range(int(len(var_list) / 2)):
         main_idx = 2 * idx
         sub_idx = 2 * idx + 1
@@ -77,21 +78,41 @@ def indel_frequency_by_1500x1500_cell_id():
         path_arr = [main_path, sub_path]
 
         trgt_list = []
+        trgt_err_list = []
         for path in path_arr:
             csv_list = util.csv_to_list_ignr_header(WORK_DIR + INPUT + path + F_TABLE_FILE, "\t")
             tmp_list, err_list = logic_prep.get_data_by_cell_id(csv_list, brcd_arr, CONST_INIT)
             trgt_list.append(tmp_list)
+            trgt_err_list.append(err_list)
 
-        junk_arr = util.make_excel_hom_hete_filter_out_by_frequency(
-            WORK_DIR + "output/homo_hetero_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(idx), trgt_list,
-            cell_id_list, THRESHOLD_ARR)
+        result_list, cnt_hom_hete_wt, junk_arr = logic.get_num_of_reads_percent_of_read_by_cell(trgt_list, cell_id_list,
+                                                                                                THRESHOLD_ARR)
+        range_size = 10
+        range_start = 0
+        range_end = 100
+        trgt_data_idx = 5
+        cnt_result = logic.count_by_range(result_list, trgt_data_idx, range_size, range_start, range_end)
+
+        print(main_sub_nm[0])
+        print_list = []
+        for val in cnt_result.values():
+            print_list.append(val)
+        for tmp_idx in print_list[::-1]:
+            print(tmp_idx)
+        graph_list.append(cnt_result)
 
 
-
+def test():
+    logic = Logic.Logics()
+    range_size = 10
+    range_start = 0
+    range_end = 100
+    trgt_data_idx = 10
+    logic.count_by_range([], trgt_data_idx, range_size, range_start, range_end)
 
 if __name__ == '__main__':
     start_time = time.perf_counter()
     print("start [ " + PROJECT_NAME + " ]>>>>>>>>>>>>>>>>>>")
-    indel_frequency_by_1500x1500_cell_id()
+    show_chart()
     # anlyze_indel_by_MAIN_to_SUB()  # 1
     print("::::::::::: %.2f seconds ::::::::::::::" % (time.perf_counter() - start_time))

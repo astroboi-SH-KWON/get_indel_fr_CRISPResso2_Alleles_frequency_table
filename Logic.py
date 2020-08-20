@@ -1,3 +1,4 @@
+import re
 
 class Logics:
     def __init__(self):
@@ -204,6 +205,30 @@ class Logics:
             result_list.append(tmp_row)
 
         return result_list, cnt_homo_hetero_wt, [cell_non_junk_list, non_cell_junk_list]
+
+    def count_by_range(self, data_list, trgt_idx, rng_size=10, rng_strt=0, rng_e=100):
+        result_dict = {}
+        for idx in range(rng_strt, rng_e, rng_size):
+            result_dict.update({str(idx) + self.deli + str(idx + rng_size): 0})
+
+        total = 0
+        for data_arr in data_list:
+            tmp_data = data_arr[trgt_idx]
+            if tmp_data == rng_e:
+                result_dict[str(rng_e - rng_size) + self.deli + str(rng_e)] += 1
+                total += 1
+            else:
+                for range_key, val in result_dict.items():
+                    try:
+                        range_arr = re.findall('\d+', range_key)
+                        if float(range_arr[0]) <= tmp_data < float(range_arr[1]):
+                            result_dict[range_key] += 1
+                            total += 1
+                    except Exception as err:
+                        print("err during counting data : ", err)
+        result_dict.update({"total": total})
+        return result_dict
+
 
 
 

@@ -23,6 +23,7 @@ MAIN_DIR = "TGCCATGGAGGAGTCACAGT"
 SUB_DIR = "AGAGGACAGTCAGCTCCAAG"
 MAIN_SUB_NAME = ["trp53", "fancg"]
 
+SUBPATH = "Trp53_Syt11_LDHC_20200820/"
 THRESHOLD_ARR = [5, 5]
 ############### end setting env #################
 def anlyze_indel_by_MAIN_to_SUB():
@@ -121,7 +122,7 @@ def indel_frequency_by_1500x1500_cell_id():
         trgt_list = []
         trgt_err_list = []
         for path in path_arr:
-            csv_list = util.csv_to_list_ignr_header(WORK_DIR + INPUT + path + F_TABLE_FILE, "\t")
+            csv_list = util.csv_to_list_ignr_header(WORK_DIR + INPUT + SUBPATH + path + F_TABLE_FILE, "\t")
             tmp_list, err_list = logic_prep.get_data_by_cell_id(csv_list, brcd_arr, CONST_INIT)
             trgt_list.append(tmp_list)
             trgt_err_list.append(err_list)
@@ -130,19 +131,19 @@ def indel_frequency_by_1500x1500_cell_id():
                                                                                                 THRESHOLD_ARR)
 
         util.make_excel_by_list(
-            WORK_DIR + "output/tot_read_by_cell_homo_hetero_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(idx),
+            WORK_DIR + "output/" + SUBPATH + "tot_read_by_cell_homo_hetero_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(idx),
             result_list, cnt_hom_hete_wt)
 
         for tmp_idx in range(len(trgt_err_list)):
             sorted_err_list = logic_prep.sort_list_by_ele(trgt_err_list[tmp_idx], -1)
             logic.count_num_by_err(sorted_err_list)
-            util.make_excel_err_list(WORK_DIR + "output/" + main_sub_nm[tmp_idx] + "_error_list_" + str(idx), sorted_err_list)
+            util.make_excel_err_list(WORK_DIR + "output/" + SUBPATH + main_sub_nm[tmp_idx] + "_error_list_" + str(idx), sorted_err_list)
 
-        # junk_file_nm = ['cell_non_junk', 'non_cell_junk']
-        # for idx_junk in range(len(junk_arr)):
-        #     util.make_excel_by_arr_list(
-        #         WORK_DIR + "output/" + junk_file_nm[idx_junk] + "_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(
-        #             idx), junk_arr[idx_junk])
+        junk_file_nm = ['cell_non_junk', 'non_cell_junk']
+        for idx_junk in range(len(junk_arr)):
+            util.make_excel_by_arr_list(
+                WORK_DIR + "output/" + SUBPATH + junk_file_nm[idx_junk] + "_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(
+                    idx), junk_arr[idx_junk])
 
 
 
