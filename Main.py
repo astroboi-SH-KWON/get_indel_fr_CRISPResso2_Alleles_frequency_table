@@ -23,7 +23,7 @@ MAIN_DIR = "TGCCATGGAGGAGTCACAGT"
 SUB_DIR = "AGAGGACAGTCAGCTCCAAG"
 MAIN_SUB_NAME = ["trp53", "fancg"]
 
-SUBPATH = "Trp53_Syt11_LDHC_20200820/"
+SUBPATH = "Trp53_Syt11_LDHC_20200824/"
 THRESHOLD_ARR = [5, 5]
 ############### end setting env #################
 def anlyze_indel_by_MAIN_to_SUB():
