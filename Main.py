@@ -4,7 +4,7 @@ import Util
 import Logic
 import LogicPrep
 ############### start to set env ################
-WORK_DIR = "D:/000_WORK/JangHyeWon_KimMinYung/20200703/WORK_DIR/"
+WORK_DIR = "D:/000_WORK/JangHyeWon_LeeMinYung/20200703/WORK_DIR/"
 # WORK_DIR = os.getcwd() + "/"
 PROJECT_NAME = WORK_DIR.split("/")[-2]
 INPUT = "input/"
@@ -23,9 +23,11 @@ MAIN_DIR = "TGCCATGGAGGAGTCACAGT"
 SUB_DIR = "AGAGGACAGTCAGCTCCAAG"
 MAIN_SUB_NAME = ["trp53", "fancg"]
 
-SUBPATH = "Trp53_Syt11_LDHC_20200824/"
+SUBPATH = "Trp53_Ssxb10_20201221/"
 THRESHOLD_ARR = [5, 5]
 ############### end setting env #################
+
+
 def anlyze_indel_by_MAIN_to_SUB():
     util = Util.Utils()
     logic_prep = LogicPrep.LogicPreps()
@@ -51,6 +53,7 @@ def anlyze_indel_by_MAIN_to_SUB():
         sorted_err_list = logic_prep.sort_list_by_ele(trgt_err_list[idx], -1)
         logic.count_num_by_err(sorted_err_list)
         util.make_excel_err_list(WORK_DIR + "output/" + MAIN_SUB_NAME[idx] + "_error_list", sorted_err_list)
+
 
 def anlyze_indel_by_MAIN_to_SUB_from_list():
     util = Util.Utils()
@@ -94,6 +97,7 @@ def anlyze_indel_by_MAIN_to_SUB_from_list():
             sorted_err_list = logic_prep.sort_list_by_ele(trgt_err_list[tmp_idx], -1)
             logic.count_num_by_err(sorted_err_list)
             util.make_excel_err_list(WORK_DIR + "output/" + main_sub_nm[tmp_idx] + "_error_list_" + str(idx), sorted_err_list)
+
 
 def indel_frequency_by_1500x1500_cell_id():
     util = Util.Utils()
@@ -144,9 +148,6 @@ def indel_frequency_by_1500x1500_cell_id():
             util.make_excel_by_arr_list(
                 WORK_DIR + "output/" + SUBPATH + junk_file_nm[idx_junk] + "_" + main_sub_nm[0] + "_" + main_sub_nm[1] + "_" + str(
                     idx), junk_arr[idx_junk])
-
-
-
 
 
 if __name__ == '__main__':
