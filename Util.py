@@ -409,6 +409,7 @@ class Utils:
         self.make_row(sheet, 2, cnt_homo_hetero_wt)
 
         row = 4
+        # #0f_O : #of mutation, #of_X : #of non mutation
         header_arr = ['index', 'barcode_1', 'barcode_2', 'homo_hetero', '#0f_O', '%of_O', '#of_X', '%of_X',
                       'total_main', 'target_homo_hetero', '#0f_target_O', '%of_target_O', '#of_target_X',
                       '%of_target_X', 'total_target']
